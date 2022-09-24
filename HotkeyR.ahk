@@ -4,21 +4,21 @@
 
 #include <Optimize>
 #include <SerDes>
-#include <RunAsAdmin>
+;#include <RunAsAdmin>
 
-#include <_HtmlWindow>
+#include <_HtmlWindow>  
 #include <_ShellRunEx>
 #include <_GetWindowList>
 #include <_GetWindowIcon>
 
 
 
-RunAsAdmin()
+; RunAsAdmin()
 
 
 
 
-; Thread, interrupt, 0  ; IMPORTANT: Make all threads always-interruptible
+ Thread, interrupt, 0  ; IMPORTANT: Make all threads always-interruptible
 
 
 
@@ -26,14 +26,14 @@ Suspend On  ; Disable all hotkeys by default
 
 
 SetWorkingDir %A_ScriptDir%
-SetCapsLockState, AlwaysOff
+; SetCapsLockState, AlwaysOff
 
 
 BEEP_FILE = %A_ScriptDir%\Resources\Beep.wav
 APP_NAME = HotkeyR
 TEMP_FOLDER = %A_Temp%\HotkeyR
 
-
+global bAlreadyHidden:=false
 
 
 FileCreateDir % TEMP_FOLDER
@@ -204,6 +204,16 @@ onKeyPressed()
 
 ; Play beep sound
 SoundPlay %BEEP_FILE%
+HostAHK:="D:\Dokumente neu\000 AAA Dokumente\000 AAA HSRW\General\AHK scripts\Projects\Finished\Host.ahk\Host.ahk"
+if FileExist(HostAHK)
+    run, % HostAHK
+Else
+    msgbox, 8754, HotkeyR	- failed to boot Host.ahk, File`n`n"%HostAHK%"`n`ncould not be found`, and was`nthus not started. Continue?,
+    IfMsgBox, retry
+        reload
+    IfMsgBox, Ignore
+        return
+    ifmsgbox, cancel
 return
 
 
@@ -211,29 +221,28 @@ return
 
 
 
-
-~LButton & WheelUp::
-Suspend, Permit
-SoundSet +10
-SoundPlay %BEEP_FILE%
-return
-
-
-
-~LButton & WheelDown::
-Suspend, Permit
-SoundSet -10
-SoundPlay %BEEP_FILE%
-return
+; ~LButton & WheelUp::
+; Suspend, Permit
+; SoundSet +10
+; SoundPlay %BEEP_FILE%
+; return
 
 
 
-#F4::
-Suspend, Permit
-WinGet, pid, PID, A
-Process, Close, %pid%
-SoundPlay %BEEP_FILE%
-return
+; ~LButton & WheelDown::
+; Suspend, Permit
+; SoundSet -10
+; SoundPlay %BEEP_FILE%
+; return
+
+
+
+; #F4::
+; Suspend, Permit
+; WinGet, pid, PID, A
+; Process, Close, %pid%
+; SoundPlay %BEEP_FILE%
+; return
 
 
 
@@ -389,19 +398,38 @@ updateUI(hwnd) {
     g_webBrowser.document.getElementById("tr_" hwnd).className := "activeWindow"
 }
 
+lTimeout()
+{
+    SetTimer, lTimeout,Off
+    if !bAlreadyHidden
+    {
+        Gui, g_htmlWindow:hide
+        g_fader.fadeOut()
 
+    }
+    while GetKeyState("Capslock","D")
+    {
 
+    }
+    global bAlreadyHidden:=true
+    return
+}
 $*CapsLock::
 Suspend, Permit ; Mark the current subroutine as being exempt from suspension
 {   
+    bAlreadyHidden:=false
 	; HACK: sometimes caps lock has been turned on
-	SetCapsLockState, AlwaysOff
+	; SetCapsLockState, AlwaysOff
+    
 
     if ( not hw_isReady() ) {
         KeyWait, CapsLock
         return
     }
-    
+    if Winactive("ahk_class CabinetWClass")
+        Settimer, lTimeout, 900
+    Else
+        Settimer, lTimeout, 2300
     Critical
     
     g_winList := getWindowList()
@@ -409,20 +437,6 @@ Suspend, Permit ; Mark the current subroutine as being exempt from suspension
     Suspend, Off   ; Enable all hotkeys
     
     Critical Off
-    
-    
-    
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
     g_lastKeyPressed =
     
     updateTbody()
@@ -434,7 +448,7 @@ Suspend, Permit ; Mark the current subroutine as being exempt from suspension
     ; }
     ; hw_height := 600
     hw_show()
-    
+    ; bAlreadyHidden:=true
 
     SetTimer, onTimer, 500
     
@@ -455,17 +469,14 @@ Suspend, Permit ; Mark the current subroutine as being exempt from suspension
     }
     
     ; TODO: remove nonexistent icon cache
-    
-    
-    
-    
     KeyWait CapsLock
     
     Suspend, On
-    
+    if bAlreadyHidden
+        return
     SetTimer, onTimer, Off
-
-    hw_hide()
+    ; if !bAlreadyHidden || GetKeyState("Capslock","U")
+        hw_hide()
 }
 return
 
@@ -576,3 +587,16 @@ onTimer() {
     ; Reset AlwaysOnTop to keep HotkeyR front most
     WinSet, AlwaysOnTop, On, ahk_id %GuiHwnd%
 }
+fMorse(timeout = 400) { ;
+   tout := timeout/1000
+   key := RegExReplace(A_ThisHotKey,"[\*\~\$\#\+\!\^]")
+   Loop {
+      t := A_TickCount
+      KeyWait %key%
+      Pattern .= A_TickCount-t > timeout
+      KeyWait %key%,DT%tout%
+      If (ErrorLevel)
+         Return Pattern
+   }
+}
+	

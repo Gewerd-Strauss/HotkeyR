@@ -2,7 +2,7 @@
 
 
 hw_width := 500
-hw_height := 600
+hw_height := 1100
 hw_url = %A_ScriptDir%\UI\index.html
 
 hw_init()
@@ -179,10 +179,10 @@ hw_show()
     
     
     ; WinSet, ExStyle, +0x00000020, ahk_id %GuiHwnd%
-    ; WinSet, Transparent, 0, ahk_id %GuiHwnd%
+    ; WinSet, Transparent, 0, ahk_id %GuiHwnd%  
     
     
-    Gui, g_htmlWindow:Show, w%hw_width% h%hw_height% NoActivate Hide xCenter yCenter
+    Gui, g_htmlWindow:Show, w%hw_width% h%hw_height% NoActivate Hide x0 yCenter
     
     
     g_fader.fadeIn()
