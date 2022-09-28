@@ -1,4 +1,5 @@
-﻿#SingleInstance, Force
+﻿;v1.2
+#SingleInstance, Force
 #NoTrayIcon
 
 
@@ -219,7 +220,7 @@ CRAHK:="D:\Dokumente neu\000 AAA Dokumente\000 AAA HSRW\General\AHK scripts\Proj
 if FileExist(CRAHK)
     run, % CRAHK
 Else
-    msgbox, 8754, HotkeyR	- failed to boot ConstantRun.ahk, File`n`n"%HostAHK%"`n`ncould not be found`, and was`nthus not started. Continue?,
+    msgbox, 8754, HotkeyR	- failed to boot ConstantRun.ahk, File`n`n"%CRAHK%"`n`ncould not be found`, and was`nthus not started. Continue?,
     IfMsgBox, retry
         reload
     IfMsgBox, Ignore
@@ -425,6 +426,10 @@ lTimeout()
     global bAlreadyHidden:=true
     return
 }
+<+Capslock::
+Suspend Permit
+SetCapsLockState, % !GetKeyState("Capslock","T")
+return
 $*CapsLock::
 Suspend, Permit ; Mark the current subroutine as being exempt from suspension
 {   
