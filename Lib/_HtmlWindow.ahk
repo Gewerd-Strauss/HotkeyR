@@ -2,7 +2,7 @@
 
 
 hw_width := 500
-hw_height := 1100
+hw_height_original := hw_height := A_ScreenHeight-50
 hw_url = %A_ScriptDir%\UI\index.html
 
 hw_init()
@@ -181,8 +181,8 @@ hw_show()
     ; WinSet, ExStyle, +0x00000020, ahk_id %GuiHwnd%
     ; WinSet, Transparent, 0, ahk_id %GuiHwnd%  
     
-    
-    Gui, g_htmlWindow:Show, w%hw_width% h%hw_height% NoActivate Hide x0 yCenter
+    yPos:=A_ScreenHeight-hw_height
+    Gui, g_htmlWindow:Show, w%hw_width% h%hw_height% NoActivate Hide x0 y0 ;yCenter
     
     
     g_fader.fadeIn()
