@@ -178,29 +178,6 @@ onKeyPressed()
 
 ; Play beep sound
 SoundPlay %BEEP_FILE%
-HostAHK:="D:\Dokumente neu\000 AAA Dokumente\000 AAA HSRW\General\AHK scripts\Projects\Finished\Host.ahk\Host.ahk"
-if FileExist(HostAHK)
-    run % HostAHK
-Else
-    msgbox 8754, HotkeyR	- failed to boot Host.ahk, File`n`n"%HostAHK%"`n`ncould not be found`, and was`nthus not started. Continue?,
-IfMsgBox, retry
-    reload
-IfMsgBox, Ignore
-    return
-ifmsgbox, cancel
-    ; CRAHK:="D:\Dokumente neu\000 AAA Dokumente\000 AAA HSRW\General\AHK scripts\Projects\Finished\ConstantRun.ahk"
-    ; CRAHK:="D:\Dokumente neu\000 AAA Dokumente\000 AAA HSRW\General\AHK scripts\Projects\Finished\ConstantRun.ahk"
-    ; if FileExist(CRAHK)
-    ;     run, % CRAHK
-    ; Else
-    ;     msgbox, 8754, HotkeyR	- failed to boot ConstantRun.ahk, File`n`n"%CRAHK%"`n`ncould not be found`, and was`nthus not started. Continue?,
-    ;     IfMsgBox, retry
-    ;         reload
-    ;     IfMsgBox, Ignore
-    ;         return
-    ;     ifmsgbox, cancel
-    return
-
 ; ~LButton & WheelUp::
 ; Suspend, Permit
 ; SoundSet +10
